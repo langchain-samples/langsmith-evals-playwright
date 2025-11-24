@@ -64,6 +64,8 @@ This will:
 - Evaluate the responses using LLM-as-judge
 - Display results and a link to view detailed results in LangSmith
 
+**Note**: In the LangSmith UI, you may need to manually add the evaluator column (e.g., "correctness") to the results table. Look for the column customization options in the LangSmith interface to display evaluator feedback.
+
 ## Architecture
 
 The project consists of:
