@@ -4,7 +4,11 @@ A LangChain evaluation pipeline that uses Playwright to interact with chat.langc
 
 ## Overview
 
-This example demonstrates how to evaluate a web-based LLM application by automating browser interactions with Playwright, scraping responses from chat.langchain.com, and evaluating them using LangChain's LLM-as-judge evaluator. It provides an extensible response format that can be adapted for genUI or browser-based evaluations, making it useful for testing and validating web-based LLM applications that don't expose direct APIs.
+This example demonstrates how to evaluate a web-based LLM application by automating browser interactions with Playwright, scraping responses from chat.langchain.com, and evaluating them using LangChain's LLM-as-judge evaluator. This can be used for e2e tests including frontend, and provides an extensible response format that can be adapted for genUI or browser-based evaluations, making it useful for testing and validating web-based LLM applications that don't expose direct APIs.
+
+- **Example type**: customer-resource
+- **Product area**: evaluation, observability, langsmith
+- **Experience level**: intermediate
 
 ## Quickstart
 
@@ -82,6 +86,7 @@ The project consists of:
 ### Limitations
 
 The Playwright scraper relies on specific HTML selectors and page structure from chat.langchain.com. If the frontend of chat.langchain.com changes (e.g., updated UI, changed element selectors, or modified page structure), the scraper may break and will need to be updated. The selectors used are based on Playwright's codegen tool, but they may need adjustment if the website is updated.
+
 
 ## License
 
