@@ -4,38 +4,28 @@ A LangChain evaluation pipeline that uses Playwright to interact with chat.langc
 
 ## Overview
 
-This project demonstrates how to evaluate a web-based LLM application by:
-1. Using Playwright to automate interactions with chat.langchain.com
-2. Scraping the responses from the web interface
-3. Evaluating the scraped responses using LangChain's LLM-as-judge evaluator
-4. Using an extensible response format that can be adapted for genUI or browser-based evaluations
+This example demonstrates how to evaluate a web-based LLM application by automating browser interactions with Playwright, scraping responses from chat.langchain.com, and evaluating them using LangChain's LLM-as-judge evaluator. It provides an extensible response format that can be adapted for genUI or browser-based evaluations, making it useful for testing and validating web-based LLM applications that don't expose direct APIs.
 
-## Installation
+## Quickstart
 
 ### Prerequisites
 
 - Python 3.11+
-- Virtual environment (recommended)
+- [uv](https://github.com/astral-sh/uv) package manager
 
-### Setup
+### Installation
 
-1. **Create and activate a virtual environment**:
+1. **Install dependencies using uv**:
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   uv sync
    ```
 
-2. **Install dependencies**:
+2. **Install Playwright browsers**:
    ```bash
-   pip install -r requirements.txt
+   uv run playwright install
    ```
 
-3. **Install Playwright browsers**:
-   ```bash
-   playwright install
-   ```
-
-4. **Configure environment variables**:
+3. **Configure environment variables**:
    
    Copy `.env.example` to `.env` and fill in your API keys:
    ```bash
@@ -48,14 +38,12 @@ This project demonstrates how to evaluate a web-based LLM application by:
    LANGCHAIN_API_KEY=your_langchain_api_key_here
    ```
 
-## Usage
-
-### Running Evaluations
+### Running the Example
 
 Run the evaluation script:
 
 ```bash
-python run_eval.py
+uv run python run_eval.py
 ```
 
 This will:
@@ -66,24 +54,35 @@ This will:
 
 **Note**: In the LangSmith UI, you may need to manually add the evaluator column (e.g., "correctness") to the results table. Look for the column customization options in the LangSmith interface to display evaluator feedback.
 
-## Architecture
+To test the scraper alone in headful mode with a single prompt: `uv run python test_scraper.py`
+
+## Configuration
+
+### Environment Variables
+
+- `OPENAI_API_KEY` (required): Your OpenAI API key for the LLM-as-judge evaluator
+- `LANGCHAIN_API_KEY` (required): Your LangChain API key for LangSmith integration
+
+### Optional Parameters
+
+The Playwright scraper accepts optional parameters:
+- `headless` (default: `True`): Whether to run the browser in headless mode
+- `timeout` (default: `30000`): Maximum time to wait for response in milliseconds
+
+## Additional Notes
+
+
+### Architecture
 
 The project consists of:
-
 - **`response_format.py`**: Extensible Pydantic models for structured responses
 - **`playwright_scraper.py`**: Playwright automation to interact with chat.langchain.com (runs in headless mode by default)
 - **`run_eval.py`**: Main evaluation script that orchestrates the evaluation pipeline
 
-## Response Format
+### Limitations
 
-The response format is designed to be extensible for different evaluation scenarios:
-- `BaseResponse`: Base class with common fields (text, metadata, timestamp, source)
-- `ChatLangchainResponse`: Specific implementation for chat.langchain.com
-- Can be extended for genUI or browser-based evaluations
+The Playwright scraper relies on specific HTML selectors and page structure from chat.langchain.com. If the frontend of chat.langchain.com changes (e.g., updated UI, changed element selectors, or modified page structure), the scraper may break and will need to be updated. The selectors used are based on Playwright's codegen tool, but they may need adjustment if the website is updated.
 
-**Note**: The `ChatLangchainResponse` includes a `message_count` field that tracks the number of messages in the conversation. This is currently set to 1 for single-turn evaluations, but is included to support future multi-turn evaluation scenarios where you may want to track conversation length across multiple interactions.
+## License
 
-## Limitations
-
-**Note**: The Playwright scraper relies on specific HTML selectors and page structure from chat.langchain.com. If the frontend of chat.langchain.com changes (e.g., updated UI, changed element selectors, or modified page structure), the scraper may break and will need to be updated. The selectors used are based on Playwright's codegen tool, but they may need adjustment if the website is updated.
-
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

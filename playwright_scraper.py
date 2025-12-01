@@ -61,26 +61,22 @@ async def scrape_chat_langchain(
             await asyncio.sleep(2)
             
             # Wait for streaming to complete - look for the copy button as an indicator
-            # that the response is ready
+            # that the response is complete
             copy_button = page.get_by_role("button", name="Copy", exact=True)
-            # Wait for copy button to appear (indicates response has started)
+            # Wait for copy button to appear (indicates response is ready)
             await copy_button.wait_for(state="visible", timeout=timeout)
-            
-            # Wait for network to be idle (indicates streaming is complete)
-            try:
-                await page.wait_for_load_state("networkidle", timeout=timeout)
-            except PlaywrightTimeoutError:
-                # If networkidle times out, wait a bit more as fallback
-                await asyncio.sleep(2)
+            # Wait a bit more to ensure streaming is fully complete
+            await asyncio.sleep(1)
             
             # Clear the clipboard first to avoid stale content
             await page.evaluate("async () => await navigator.clipboard.writeText('')")
+            await asyncio.sleep(0.2)
             
             # Click the copy button to copy the response to clipboard
             await copy_button.click()
             
-            # Wait briefly for clipboard to be updated
-            await page.wait_for_timeout(300)  # 300ms wait for clipboard
+            # Wait a moment for clipboard to be updated
+            await asyncio.sleep(0.5)
             
             # Extract the response text from clipboard
             response_text = await page.evaluate("async () => await navigator.clipboard.readText()")
